@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require("fs");
+const uuid = require('uuid');
 const app = express();
 const PORT = 9000;
 let dbJSON = path.join(__dirname, 'db', 'db.json');
@@ -34,7 +35,9 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/notes', (req, res) => {
     fs.readFile(dbJSON, 'utf8', (err, data) => {
         if (err) throw err;
+        this.id = uuid.v1();
         let dbData = JSON.parse(data);
+        req.body.id = this.id;
         dbData.push(req.body);
         fs.writeFile(dbJSON, JSON.stringify(dbData), (err) => {
             if (err) throw err;
@@ -43,5 +46,22 @@ app.post('/api/notes', (req, res) => {
     });
 })
 app.delete('/api/notes/:id', (req, res) => {
-    res.send('Got a DELETE request at /user')
-})
+    fs.readFile(dbJSON, 'utf8', (err, data) => {
+        if (err) throw err;
+        let deleteData = JSON.parse(data);
+        console.log(deleteData);
+        console.log(req.params);
+        // deleteData.filter( (req.params) => {
+        //     if()
+        // } ;
+      
+         
+        //     // fs.unlink('./server/upload/my.csv',function(err){
+        //     //      if(err) return console.log(err);
+        //     //      console.log('file deleted successfully');
+        //     });  
+         
+
+        // res.json(JSON.parse(data));
+    });
+});
