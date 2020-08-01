@@ -64,11 +64,7 @@ app.delete('/api/notes/:id', (req, res) => {
     fs.readFile(dbJSON, 'utf8', (err, data) => {
         if (err) throw err;
         let deleteData = JSON.parse(data);
-        
-        console.log(deleteData);
-       
         let reqString = req.params.id;
-        
         for(let i = 0; i < deleteData.length; i++){
             if(deleteData[i].id === reqString){
                 let index = deleteData.findIndex(x => x.id === reqString);
@@ -80,7 +76,6 @@ app.delete('/api/notes/:id', (req, res) => {
                         console.log("success!");
                 });
                 res.json(deleteData);
-                console.log(deleteData);
             } 
         }
     });
