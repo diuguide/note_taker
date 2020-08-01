@@ -1,15 +1,22 @@
+// call in dependancies
 const express = require('express');
 const path = require('path');
 const fs = require("fs");
 const uuid = require('uuid');
 const app = express();
+
+// set port number or env for heroku
 let PORT = process.env.PORT || 9000;
 let dbJSON = path.join(__dirname, 'db', 'db.json');
-let requestBody = [];
+
+
+// express specific code setting up your server
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.listen(PORT, () => console.log(`Server Running on Port ${PORT}`));
 app.use(express.static('public'));
+
+// get returns the index.html page
 app.get('/', (req, res) => {
     const mainPage = path.join(__dirname, 'public', 'index.html');
     fs.readFile(mainPage, (err, data) => {
@@ -18,6 +25,8 @@ app.get('/', (req, res) => {
         res.end(data);
     });
 })
+
+// get returns the notes.html page
 app.get('/notes', (req, res) => {
     const notesPage = path.join(__dirname, 'public', 'notes.html');
     fs.readFile(notesPage, (err, data) => {
@@ -26,12 +35,16 @@ app.get('/notes', (req, res) => {
         res.end(data);
     });
 })
+
+//reads the db json file and returns the saved notes as a JSON
 app.get('/api/notes', (req, res) => {
     fs.readFile(dbJSON, 'utf8', (err, data) => {
         if (err) throw err;
         res.json(JSON.parse(data));
     });
 })
+
+// receives new note to save on the request body, adds it to the db.json file and then returns the new note to the client
 app.post('/api/notes', (req, res) => {
     fs.readFile(dbJSON, 'utf8', (err, data) => {
         if (err) throw err;
@@ -45,6 +58,8 @@ app.post('/api/notes', (req, res) => {
         });
     });
 })
+
+// receives the ID assigned to the note, searches for that id in the db.json file, then removes the matching object from the array and returns a fresh json
 app.delete('/api/notes/:id', (req, res) => {
     fs.readFile(dbJSON, 'utf8', (err, data) => {
         if (err) throw err;
