@@ -70,21 +70,15 @@ app.delete('/api/notes/:id', (req, res) => {
         let reqString = req.params.id;
         
         for(let i = 0; i < deleteData.length; i++){
-            // if the currentNotes id equals the front end id
             if(deleteData[i].id === reqString){
-                // getting the index of an object inside an array:  
-                // https://stackoverflow.com/questions/15997879/get-the-index-of-the-object-inside-an-array-matching-a-condition
                 let index = deleteData.findIndex(x => x.id === reqString);
-                // remove the object with the matching id
                 deleteData.splice(index, 1);
-                // rewrite json file with the updated notes
                 fs.writeFile("./db/db.json", JSON.stringify(deleteData), function(err){
                     if(err){
                         return console.log(err);
                     }
                         console.log("success!");
                 });
-                // respond to the user with the new notes
                 res.json(deleteData);
                 console.log(deleteData);
             } 
